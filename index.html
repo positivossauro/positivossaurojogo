@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Positivossauro - Caça-Palavras</title>
+    <!-- Google Fonts Pangolin -->
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google tag (gtag.js) - Gerenciamento LGPD embutido -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MNXC6QK097"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Bloqueia cookies do Google Analytics por padrão (LGPD)
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
+
+      gtag('js', new Date());
+      gtag('config', 'G-MNXC6QK097', { 'anonymize_ip': true });
+    </script>
+</head>
+<body>
+
+    <header>
+        <h1>que palavrinha você precisa encontrar hoje?</h1>
+        <p class="subtitle">às vezes as palavras certas estão mais perto do que a gente imagina.<br><br>encontre as palavras escondidas no caça-palavras. elas foram escolhidas com carinho pelo positivossauro, pra você.</p>
+    </header>
+
+    <!-- Botão e Player de Música -->
+    <button id="audio-toggle" class="audio-btn" aria-label="Música de Fundo">
+        Música: 🔇
+    </button>
+    <audio id="bg-music" loop>
+        <source src="assets/music.mp3" type="audio/mpeg">
+    </audio>
+
+    <main class="game-container">
+        
+        <div class="word-list-container">
+            <h2>pra você não esquecer:</h2>
+            <ul id="word-list">
+                <!-- Palavras serão inseridas via JS -->
+            </ul>
+            
+            <!-- Positivossauro faz companhia abaixo das palavras -->
+            <div class="dino-container">
+                <div id="dino-speech" class="speech-bubble hidden">
+                    Você consegue!
+                </div>
+                <img src="assets/media__1773541140439.png" alt="Positivossauro Companheiro" class="dino-corner">
+            </div>
+        </div>
+        
+        <div class="board-wrapper">
+            <div id="game-board" class="board">
+                <!-- Células geradas via JS -->
+            </div>
+            <!-- Canvas para desenhar as linhas de seleção -->
+            <canvas id="selection-canvas"></canvas>
+        </div>
+        
+    </main>
+
+    <!-- Modal/Banner de LGPD e Cookies -->
+    <div id="cookie-banner" class="cookie-banner hidden">
+        <p>pra entender como você joga e melhorar o caça-palavras, usamos alguns cookies de estatísticas. tudo bem por você? 🍪</p>
+        <div class="cookie-buttons">
+            <button id="accept-cookies" class="btn">tá bom!</button>
+            <button id="decline-cookies" class="btn alt-btn">agora não</button>
+        </div>
+    </div>
+
+    <div id="victory-modal" class="modal hidden">
+        <div class="modal-content">
+            <img src="assets/media__1773537123960.png" alt="Positivossauro" class="victory-img">
+            <h2>olha você. encontrou tudo.</h2>
+            <p>essas palavras sempre estiveram em você.<br>agora leva elas pro resto do dia, ok?</p>
+            <button id="restart-btn">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>feito com carinho pelo positivossauro.<br>tô sempre por aqui pra você.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

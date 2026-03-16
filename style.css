@@ -1,0 +1,386 @@
+/* Positivosauro - Tema Calmo */
+
+:root {
+    /* Paleta Extraída das Referências */
+    --bg-creme: #FCF9EB;
+    --verde-posi: #98C27B;
+    --verde-escuro: #5C7A4B;
+    --azul-ceu: #9DCBE8;
+    --sol-amarelo: #FFD147;
+    --texto-escuro: #2D2D2D;
+    
+    /* Variáveis Layout */
+    --board-size: 350px;
+    --cell-size: 30px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Pangolin', cursive, sans-serif;
+    user-select: none; /* Previne seleção acidental de texto no jogo */
+}
+
+body {
+    background-color: var(--bg-creme);
+    color: var(--texto-escuro);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-transform: lowercase; /* Estilo HQ/Tirinha do Positivossauro */
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    color: var(--verde-escuro);
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* Botão de Música */
+.audio-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: white;
+    border: 3px solid var(--texto-escuro);
+    border-radius: 20px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--verde-escuro);
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 2px 4px 0px rgba(0,0,0,0.1);
+    transition: transform 0.1s;
+    text-transform: lowercase;
+}
+
+.audio-btn:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    align-items: center;
+}
+
+/* Área da Lista de Palavras */
+.word-list-container {
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.05);
+    border: 2px solid var(--verde-posi);
+    width: 100%;
+    max-width: var(--board-size);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.word-list-container h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--verde-escuro);
+}
+
+#word-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+#word-list li {
+    background-color: var(--azul-ceu);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#word-list li.found {
+    background-color: #E0E0E0;
+    color: #999;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+
+/* Área do Tabuleiro */
+.board-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: var(--board-size);
+    /* Manter a proporção 1:1 */
+    aspect-ratio: 1 / 1; 
+    touch-action: none; /* CRÍTICO para swipe flúido em mobile */
+}
+
+.board {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: 3px solid var(--texto-escuro);
+    border-radius: 8px;
+    box-shadow: 4px 6px 0px rgba(0,0,0,0.1);
+    /* Gaps para parecer uma grade de revistinha */
+    gap: 1px;
+    background-color: #ddd; /* Cor das "linhas" da grade se houver gap */
+}
+
+.cell {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--texto-escuro);
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* Letras selecionadas / encontradas */
+.cell.selected {
+    background-color: var(--sol-amarelo);
+}
+
+.cell.found {
+    background-color: var(--verde-posi);
+    color: white;
+}
+
+.cell.both {
+    background-color: var(--verde-escuro);
+    color: white;
+}
+
+
+/* MODAL DE VITÓRIA */
+.hidden {
+    display: none !important;
+}
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(253, 249, 230, 0.9); /* Creme com opacidade */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+    border: 4px solid var(--verde-posi);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.modal-content h2 {
+    color: var(--verde-escuro);
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.victory-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+#restart-btn {
+    background-color: var(--verde-posi);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 0 var(--verde-escuro);
+    transition: all 0.1s;
+}
+
+#restart-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 transparent;
+}
+
+/* Adaptação para Desktop vs Mobile */
+@media (min-width: 768px) {
+    .game-container {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 40px;
+    }
+    
+    :root {
+        --board-size: 500px;
+    }
+
+    .dino-container {
+        margin-top: 20px;
+    }
+}
+
+/* Positivossauro de Companhia & Balão */
+.dino-container {
+    margin-top: 20px;
+    width: 140px;
+    pointer-events: none; /* Pra não atrapalhar o clique num celular */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dino-corner {
+    width: 100%;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+}
+
+.speech-bubble {
+    background-color: white;
+    border: 3px solid var(--texto-escuro);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; /* Estilo traço à mão livre */
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--verde-escuro);
+    text-align: center;
+    position: relative;
+    margin-bottom: 15px;
+    box-shadow: 2px 4px 0px rgba(0,0,0,0.1);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: bottom center;
+    max-width: 160px;
+}
+
+/* Triângulo puxando pra baixo da fala orgânica */
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 35px; /* Posição saindo da cabeça do dino */
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: var(--texto-escuro) transparent transparent transparent;
+    display: block;
+    width: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    right: 37px; /* Por dentro do triângulo */
+    border-width: 8px 8px 0;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    background: transparent;
+    border-radius: 0;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotate(-2deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+    100% { transform: translateY(0px) rotate(-2deg); }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Esconder animação inversa */
+.speech-bubble.hidden {
+    display: none !important;
+}
+
+/* Rodapé */
+footer {
+    margin-top: 15px; /* Bem mais coladinho com o jogo */
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding-bottom: 75px; /* Mais espaço pra não bater no banner */
+}
+
+/* Banner LGPD */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 15px 20px;
+    box-shadow: 0px -4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    z-index: 2000;
+    border-top: 3px solid var(--texto-escuro);
+}
+
+.cookie-banner p {
+    text-align: center;
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 600px;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.alt-btn {
+    background-color: var(--bg-creme);
+    color: var(--texto-escuro);
+}
